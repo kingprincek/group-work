@@ -119,3 +119,157 @@ def search_food():
         filter_by_multiple(multiple_choices())
 
     sort_distance()
+    
+# Return multiple choices based on user input (Iyer Rajagopal Mahadevan)
+# USE OF ABSTRACTION - RUBRICS
+def multiple_choices():
+    while True:
+        try:
+            flag = 0
+            multiple = input(
+                "Enter the INDEX NO. of the choices you want your food to be filtered. (e.g. for filtering based on "
+                "Cuisine and Price Range, INPUT: 1 3 \n")
+            filter_choices = [int(choices) for choices in multiple.split()]  # Returns a list
+        except ValueError:
+            valid_input()
+            continue
+        for i in filter_choices:
+            if i not in range(1, len(all_preferences) + 1):
+                flag = 1
+                break
+        if flag == 1:
+            valid_input()
+            continue
+        break
+    return filter_choices
+
+
+# Return Dietary Preferences (Gupta Jay & Xavier Ho)
+# USE OF ABSTRACTION - RUBRICS
+def search_by_veghalal():
+    while True:
+        try:
+            print("Enter your dietary preferences: (Enter the INDEX NO. of the option)")
+            # USE OF PATTERN RECOGNITION - RUBRICS
+            for i in range(1, len(all_preferences['Dietary Preference'])+1):
+                print("[", i, "]", all_preferences['Dietary Preference'][i-1])
+            veg_halal = int(input())
+        except ValueError:
+            valid_input()
+            continue
+        else:
+            if veg_halal not in range(1, len(all_preferences['Dietary Preference']) + 1):
+                valid_input()
+                continue
+            else:
+                break
+
+    # USE OF PATTERN RECOGNITION - RUBRICS
+    veg_halal = all_preferences['Dietary Preference'][veg_halal-1]
+
+    return veg_halal
+
+
+# Return cuisine preference (Gupta Jay & Xavier Ho)
+# USE OF ABSTRACTION - RUBRICS
+def search_by_cuisine():
+
+    while True:
+        try:
+            print("What type of cuisine do prefer? (Enter the INDEX NO. of the option)")
+            # USE OF PATTERN RECOGNITION - RUBRICS
+            for i in range(1, len(all_preferences['Cuisine'])+1):
+                print("[", i, "]", all_preferences['Cuisine'][i-1])
+            cuisine = int(input())
+        except ValueError:
+            valid_input()
+            continue
+        else:
+            if cuisine not in range(1, len(all_preferences['Cuisine']) + 1):
+                valid_input()
+                continue
+            else:
+                break
+
+    # USE OF PATTERN RECOGNITION - RUBRICS
+    cuisine = all_preferences['Cuisine'][cuisine-1]
+
+    return cuisine
+
+
+# Return price range (Gupta Jay & Xavier Ho)
+# USE OF ABSTRACTION - RUBRICS
+def search_by_price_range():
+    while True:
+        try:
+            print("Enter your price range: (Enter the INDEX NO. of the option)")
+            # USE OF PATTERN RECOGNITION - RUBRICS
+            for i in range(1, len(all_preferences['Price'])+1):
+                print("[", i, "]", all_preferences['Price'][i-1])
+            price_range = int(input())
+        except ValueError:
+            valid_input()
+            continue
+        else:
+            if price_range not in range(1, len(all_preferences['Price']) + 1):
+                valid_input()
+                continue
+            else:
+                break
+
+    # USE OF PATTERN RECOGNITION - RUBRICS
+    price_range = all_preferences['Price'][price_range-1]
+
+    return price_range
+
+
+# Filter by all preferences (Gupta Jay & Xavier Ho)
+# ALGORITHM DESIGN - RUBRICS
+def filter_by_all():
+    veg_halal = search_by_veghalal()
+    cuisine = search_by_cuisine()
+    price_range = search_by_price_range()
+
+    for foodpref, value in canteen_dict.items():
+        if veg_halal in canteen_dict[foodpref]['Dietary Preference'] and cuisine in canteen_dict[foodpref]['Cuisine'] \
+           and price_range in canteen_dict[foodpref]['Price']:
+            dictSort[foodpref] = value
+
+
+# Filter by dietary preferences (Gupta Jay & Xavier Ho)
+# ALGORITHM DESIGN - RUBRICS
+def sort_by_veghalal(veg_halal):
+    for foodpref, value in canteen_dict.items():
+        if veg_halal in canteen_dict[foodpref]['Dietary Preference']:
+            dictSort[foodpref] = value
+
+
+# Filter by cuisine (Gupta Jay & Xavier Ho)
+# ALGORITHM DESIGN - RUBRICS
+def sort_by_cuisine(cuisine):
+    for foodpref, value in canteen_dict.items():
+        if cuisine in canteen_dict[foodpref]['Cuisine']:
+            dictSort[foodpref] = value
+
+
+# Filter by price range (Gupta Jay & Xavier Ho)
+# ALGORITHM DESIGN - RUBRICS
+def sort_by_price_range(price_range):
+    for foodpref, value in canteen_dict.items():
+        if price_range in canteen_dict[foodpref]['Price']:
+            dictSort[foodpref] = value
+
+
+# Filter by multiple choices (Iyer Rajagopal Mahadevan)
+# USE OF ABSTRACTION - RUBRICS
+def filter_by_multiple(filter_choices):
+    if 1 in filter_choices and 2 in filter_choices and 3 in filter_choices:
+        filter_by_all()
+    elif 1 in filter_choices and 2 in filter_choices:
+        filter_by_diet_and_cuisine()
+    elif 1 in filter_choices and 3 in filter_choices:
+        filter_by_diet_and_price()
+    elif 2 in filter_choices and 3 in filter_choices:
+        filter_by_cuisine_and_price()
+
+
