@@ -272,4 +272,166 @@ def filter_by_multiple(filter_choices):
     elif 2 in filter_choices and 3 in filter_choices:
         filter_by_cuisine_and_price()
 
+# Filter by Dietary Preference and Cuisine (Iyer Rajagopal Mahadevan)
+# ALGORITHM DESIGN - RUBRICS
+def filter_by_diet_and_cuisine():
+    veg_halal = search_by_veghalal()
+    cuisine = search_by_cuisine()
+
+    for foodpref, value in canteen_dict.items():
+        if veg_halal in canteen_dict[foodpref]['Dietary Preference'] and cuisine in canteen_dict[foodpref]['Cuisine']:
+            dictSort[foodpref] = value
+
+
+# Filter by Dietary Preference and Price Range (Iyer Rajagopal Mahadevan)
+# ALGORITHM DESIGN - RUBRICS
+def filter_by_diet_and_price():
+    veg_halal = search_by_veghalal()
+    price_range = search_by_price_range()
+
+    for foodpref, value in canteen_dict.items():
+        if veg_halal in canteen_dict[foodpref]['Dietary Preference'] and price_range in canteen_dict[foodpref]['Price']:
+            dictSort[foodpref] = value
+
+
+# Filter by Cuisine and Price Range (Iyer Rajagopal Mahadevan)
+# ALGORITHM DESIGN - RUBRICS
+def filter_by_cuisine_and_price():
+    price_range = search_by_price_range()
+    cuisine = search_by_cuisine()
+
+    for foodpref, value in canteen_dict.items():
+        if cuisine in canteen_dict[foodpref]['Cuisine'] and price_range in canteen_dict[foodpref]['Price']:
+            dictSort[foodpref] = value
+
+
+# Filter by opening and closing timing of canteens (Gupta Jay)
+# ALGORITHM DESIGN - RUBRICS
+def filter_by_timing():
+    time_now = datetime.datetime.now()  # Get current time
+
+    for t, value in dictSort.items():
+        if int(canteen_dict[t]['Timing'][0]) < time_now.hour < int(canteen_dict[t]['Timing'][1]):
+            timeSort[t] = value
+
+
+# Master function to display the list of canteens and sort them based on distance
+# (Gupta Jay, Xavier Ho & Iyer Rajagopal Mahadevan)
+# ALGORITHM DESIGN - RUBRICS
+def sort_distance():
+    filter_by_timing()
+
+    if not timeSort:  # Checking if the dictionary is empty or not
+        print("No canteens found. Either no canteens are open right now or no canteens match your food preferences.")
+        print()  # Line Break
+        print("Please select a location again on the NTU Map!")
+        display_map()
+    else:
+        print("Canteens with your specified food preferences: ")
+        top_three = sorted(timeSort.items(), key=lambda x: x[1]['Distance from user'])[:3]  # Sorting Algorithm
+        for i in range(len(top_three)):
+            print("[", i+1, "]", top_three[i][1]['Name'])
+            if int(top_three[i][1]['Timing'][0]) > 12:
+                print("Opening Time:", int(top_three[i][1]['Timing'][0]-12), "pm")
+            elif int(top_three[i][1]['Timing'][0]) == 12:
+                print("Opening Time:", int(top_three[i][1]['Timing'][0]), "pm")
+            else:
+                print("Opening Time:", top_three[i][1]['Timing'][0], "am")
+            if int(top_three[i][1]['Timing'][1]) > 12:
+                print("Closing Time:", int(top_three[i][1]['Timing'][1])-12, "pm")
+            else:
+                print("Closing Time:", top_three[i][1]['Timing'][1], "am")
+            print()  # Line Break
+
+    google_maps(top_three)
+    bus_route()
+
+
+# Display the directions to the recommended canteens using Google Maps (Xavier Ho)
+def google_maps(top_three):
+    while True:
+        try:
+            maps_choice = input("Do you want to see directions to the recommended canteens? (Y/N) ")
+        except ValueError:
+            pass
+        else:
+            if maps_choice == "Y" or maps_choice == "y":
+                if len(top_three) == 1:
+                    maps_option = 1
+                else:
+                    try:
+                        print()
+                        maps_option = int(input(
+                            "Enter the index number (1/2/...) of the canteen. "))
+                    except ValueError:
+                        valid_input()
+                        continue
+                    else:
+                        if maps_option not in range(1, len(top_three) + 1):
+                            valid_input()
+                            continue
+
+                # USE OF ABSTRACTION - RUBRICS
+                maps_option = str(top_three[maps_option - 1][1]['Name'])
+                maps_url = "".join(
+                    ('https://www.google.com/maps/search/?api=1&query=NTU+', maps_option.replace(" ", "+")))
+                webbrowser.open_new(maps_url)
+                break
+
+            elif maps_choice == "N" or maps_choice == "n":
+                break
+            else:
+                valid_input()
+                continue
+
+
+# Display the live bus routes (Gupta Jay)
+def bus_route():
+    while True:
+        try:
+            bus_routes = input("There are bus routes available. Would you like to display the arriving buses? (Y/N) ")
+        except ValueError:
+            pass
+        else:
+            if bus_routes == "Y" or bus_routes == "y":
+                webbrowser.open_new('https://baseride.com/maps/public/ntu/')  # Open live bus routes
+                break
+            elif bus_routes == "N" or bus_routes == "n":
+                break
+            else:
+                valid_input()
+                continue
+
+    print()  # Line Break
+    end()
+
+
+# End the program or start again
+# USER INTERFACE DESIGN - RUBRICS
+def end():
+    while True:
+        try:
+            start_again = input("Do you want to start over? (Y/N) ")
+        except ValueError:
+            pass
+        else:
+            if start_again == "Y" or start_again == "y":
+                print()  # Line Break
+                print("Please select a location again on the NTU Map!")
+                display_map()
+            elif start_again == "N" or start_again == "n":
+                print("Thank you for using our application!")
+                sys.exit()
+            else:
+                valid_input()
+                continue
+
+
+# Display the map and start the program
+def initiate():
+    display_map()
+
+
+# Start the program
+initiate()
 
