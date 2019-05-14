@@ -11,7 +11,7 @@ from database import food_preferences  # All food preferences
 distance_between_points_dict = {}
 dictSort = {}
 timeSort = {}
-
+//canteen system
 canteen_dict = candict()
 all_preferences = food_preferences()
 
